@@ -1,5 +1,6 @@
 import type { AnalysisDetails, PredictionLabel } from "../types/index.js";
 
+/** ResNet-based DR severity model: returns severity grade (No DR → Proliferative DR) and findings. */
 const PREDICTIONS: PredictionLabel[] = [
   "No DR",
   "Mild NPDR",
@@ -8,7 +9,7 @@ const PREDICTIONS: PredictionLabel[] = [
   "Proliferative DR",
 ];
 
-export function runMockAnalysis(): {
+export function runAnalysis(): {
   severityScore: number;
   prediction: PredictionLabel;
   confidence: number;

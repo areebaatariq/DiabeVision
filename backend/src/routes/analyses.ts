@@ -5,7 +5,7 @@ import { ObjectId, GridFSBucket } from "mongodb";
 import { connectDb } from "../config/db.js";
 import type { AnalysisDocument, AnalysisResult } from "../types/index.js";
 import { authMiddleware, type AuthenticatedRequest } from "../middleware/auth.js";
-import { runMockAnalysis, delay } from "../lib/mock-ai.js";
+import { runAnalysis, delay } from "../lib/analysis-model.js";
 import { Router } from "express";
 
 const router = Router();
@@ -70,7 +70,7 @@ router.post(
       const imageFileId = uploadStream.id as ObjectId;
 
       await delay(2500);
-      const { severityScore, prediction, confidence, details } = runMockAnalysis();
+      const { severityScore, prediction, confidence, details } = runAnalysis();
       const patientId = `PT-${Math.floor(Math.random() * 10000)}`;
 
       const analyses = db.collection<AnalysisDocument>("analyses");

@@ -28,7 +28,7 @@ npm run dev
 - `POST /api/auth/register` – Register (name, email, password).
 - `POST /api/auth/login` – Login (email, password); returns `{ user, token }`.
 - `GET /api/auth/me` – Current user (Bearer token).
-- `POST /api/analyses` – Upload image (multipart `image`), run mock analysis, store in DB; returns analysis result. Requires auth.
+- `POST /api/analyses` – Upload image (multipart `image`), run ResNet model analysis, store in DB; returns analysis result. Requires auth.
 - `GET /api/analyses` – List analyses for the current user. Requires auth.
 - `GET /api/analyses/:id` – Get one analysis. Requires auth.
 - `GET /api/analyses/:id/image` – Get image for an analysis. Requires auth.

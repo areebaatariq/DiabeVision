@@ -49,7 +49,7 @@ npm run dev           # terminal 2 – frontend
 ## Features
 
 - **Auth:** Register and sign in; session stored via JWT in localStorage.
-- **Analyze:** Upload a retinal image (JPG/PNG, max 5MB); mock AI returns severity (No DR → Proliferative DR) and findings.
+- **Analyze:** Upload a retinal image (JPG/PNG, max 5MB); ResNet model returns severity (No DR → Proliferative DR) and findings.
 - **History:** List and search past analyses; images loaded with auth.
 - **Results:** View a single analysis with charts and detailed findings.
 - **Dashboard:** Overview stats and recent analyses from the API.

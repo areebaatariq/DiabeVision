@@ -83,7 +83,7 @@ export default function LandingPage() {
               </Link>
             </div>
 
-            {/* Mockup */}
+            {/* Preview */}
             <div className="mt-20 relative w-full max-w-5xl mx-auto perspective-1000">
               <div className="relative bg-slate-900 rounded-2xl border border-white/10 shadow-2xl shadow-blue-900/20 overflow-hidden transform rotate-x-12 hover:rotate-x-0 transition-transform duration-700 ease-out">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />

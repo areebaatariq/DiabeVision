@@ -304,7 +304,7 @@ export default function ResultsPage() {
                     <div className="flex items-start gap-2">
                       <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
                       <p>
-                        The AI model has detected patterns consistent with <strong>{analysis.prediction}</strong>. 
+                        The ResNet model has detected patterns consistent with <strong>{analysis.prediction}</strong>. 
                         Clinical correlation is recommended.
                       </p>
                     </div>

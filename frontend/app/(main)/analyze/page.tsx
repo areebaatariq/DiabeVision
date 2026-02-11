@@ -155,7 +155,7 @@ export default function AnalyzePage() {
                   <div>
                     <h4 className="font-medium text-blue-900">Ready for Analysis</h4>
                     <p className="text-sm text-blue-700">
-                      Our AI model will scan for signs of diabetic retinopathy including microaneurysms and hemorrhages.
+                      Our ResNet model will scan for signs of diabetic retinopathy including microaneurysms and hemorrhages.
                     </p>
                   </div>
                 </div>
