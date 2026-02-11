@@ -3,9 +3,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getAnalysis, getAnalysisImageBlobUrl, type AnalysisResult } from "@/lib/api";
-import { ArrowLeft, Download, Share2, AlertTriangle, CheckCircle, Info } from "lucide-react";
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
-import Link from 'next/link';
+import { ArrowLeft, Download, Share2, AlertTriangle, CheckCircle, Info, Loader2 } from "lucide-react";
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
+import Link from "next/link";
+import { toast } from "sonner";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function ResultsPage() {
   const params = useParams();
@@ -13,6 +16,8 @@ export default function ResultsPage() {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
+  const [sharing, setSharing] = useState(false);
   const blobUrlRef = useRef<string>("");
 
   useEffect(() => {
@@ -72,6 +77,154 @@ export default function ResultsPage() {
     return 'text-red-600 bg-red-50 border-red-200';
   };
 
+  const handleShare = async () => {
+    if (!analysis || typeof window === "undefined") return;
+    setSharing(true);
+    const url = window.location.href;
+    const title = "RetinaCheck – Analysis Report";
+    const text = `Diabetic retinopathy analysis: ${analysis.prediction} (${analysis.confidence}% confidence) – Patient ${analysis.patientId}. View full report:`;
+
+    const timeout = (ms: number) =>
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timeout")), ms));
+
+    try {
+      if (navigator.share) {
+        await Promise.race([navigator.share({ title, text, url }), timeout(8000)]);
+        toast.success("Report shared");
+      } else {
+        await navigator.clipboard.writeText(url);
+        toast.success("Link copied to clipboard");
+      }
+    } catch (err) {
+      const isAbort = (err as Error).name === "AbortError";
+      const isTimeout = (err as Error).message === "timeout";
+      if (isTimeout) toast.error("Share timed out");
+      if (!isAbort && !isTimeout) {
+        try {
+          await navigator.clipboard.writeText(url);
+          toast.success("Link copied to clipboard");
+        } catch {
+          toast.error("Sharing failed");
+        }
+      }
+    } finally {
+      setSharing(false);
+    }
+  };
+
+  const handleExportReport = async () => {
+    if (!analysis) return;
+    setExporting(true);
+    try {
+      let imageDataUrl = "";
+      const urlToUse = imageUrl || analysis.imageUrl;
+      if (urlToUse && urlToUse.startsWith("blob:")) {
+        try {
+          const res = await fetch(urlToUse);
+          const blob = await res.blob();
+          imageDataUrl = await new Promise<string>((resolve, reject) => {
+            const r = new FileReader();
+            r.onload = () => resolve(r.result as string);
+            r.onerror = reject;
+            r.readAsDataURL(blob);
+          });
+        } catch {
+          imageDataUrl = "";
+        }
+      }
+      const dateStr = new Date(analysis.date).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      const findings = [
+        { name: "Microaneurysms", value: analysis.details.microaneurysms },
+        { name: "Hemorrhages", value: analysis.details.hemorrhages },
+        { name: "Hard Exudates", value: analysis.details.exudates },
+        { name: "Cotton Wool Spots", value: analysis.details.cottonWoolSpots },
+        { name: "Neovascularization", value: analysis.details.neovascularization },
+      ];
+      const recommendation =
+        analysis.severityScore > 1
+          ? "Refer to ophthalmologist for comprehensive eye exam within 2-4 weeks."
+          : "Schedule follow-up screening in 12 months.";
+
+      const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const pageW = doc.getPageWidth();
+      const margin = 14;
+      let y = margin;
+
+      doc.setFontSize(18);
+      doc.setFont("helvetica", "bold");
+      doc.text("RetinaCheck – Diabetic Retinopathy Report", margin, y);
+      y += 10;
+
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(100, 116, 139);
+      doc.text(`Patient ID: ${analysis.patientId}  |  Date: ${dateStr}  |  Generated: ${new Date().toLocaleDateString()}`, margin, y);
+      y += 12;
+
+      if (imageDataUrl) {
+        const imgW = 70;
+        const imgH = 55;
+        try {
+          const format = imageDataUrl.indexOf("image/png") !== -1 ? "PNG" : "JPEG";
+          doc.addImage(imageDataUrl, format, margin, y, imgW, imgH);
+        } catch {
+          doc.setFontSize(9);
+          doc.text("(Image could not be embedded)", margin, y + imgH / 2);
+        }
+        y += imgH + 10;
+      }
+
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(30, 41, 59);
+      doc.text("AI Prediction", margin, y);
+      y += 7;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(14);
+      doc.setTextColor(37, 99, 235);
+      doc.text(analysis.prediction, margin, y);
+      y += 8;
+      doc.setFontSize(10);
+      doc.setTextColor(71, 85, 105);
+      doc.text(`Model confidence: ${analysis.confidence}%`, margin, y);
+      y += 12;
+
+      autoTable(doc, {
+        startY: y,
+        head: [["Finding", "Detected"]],
+        body: findings.map((f) => [f.name, f.value ? "Yes" : "No"]),
+        margin: { left: margin, right: margin },
+        theme: "grid",
+        headStyles: { fillColor: [241, 245, 249], textColor: [71, 85, 105], fontStyle: "bold" },
+        styles: { fontSize: 10 },
+      });
+      y = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 12;
+
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(30, 41, 59);
+      doc.text("Recommendation", margin, y);
+      y += 6;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.text(recommendation, margin, y, { maxWidth: pageW - 2 * margin });
+      y += 14;
+      doc.setFontSize(8);
+      doc.setTextColor(100, 116, 139);
+      doc.text("This report was generated by RetinaCheck. Clinical correlation is recommended.", margin, y);
+
+      doc.save(`RetinaCheck-Report-${analysis.patientId}-${analysis.date.slice(0, 10)}.pdf`);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -86,13 +239,25 @@ export default function ResultsPage() {
           </div>
         </div>
         <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium transition-colors">
-            <Share2 className="w-4 h-4" />
-            Share
+          <button
+            onClick={handleShare}
+            disabled={sharing}
+            className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            {sharing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
+            {sharing ? "Sharing…" : "Share"}
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors shadow-lg shadow-blue-600/20">
-            <Download className="w-4 h-4" />
-            Export Report
+          <button
+            onClick={handleExportReport}
+            disabled={exporting}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors shadow-lg shadow-blue-600/20 disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            {exporting ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Download className="w-4 h-4" />
+            )}
+            {exporting ? "Exporting…" : "Export Report"}
           </button>
         </div>
       </div>
