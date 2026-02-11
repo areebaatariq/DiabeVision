@@ -33,3 +33,12 @@ npm run dev
 - `GET /api/analyses/:id` – Get one analysis. Requires auth.
 - `GET /api/analyses/:id/image` – Get image for an analysis. Requires auth.
 - `GET /health` – Health check.
+
+## Model training (Python)
+
+Jupyter notebooks in this folder are used for dataset prep and training the ResNet DR model:
+
+- **diabeVision.ipynb** – ResNet / model training (PyTorch).
+- **fyp-gans.ipynb** – Data loading (Kaggle DR), augmentation, SMOTE, DataLoader, GANs (PyTorch).
+
+Requires: `torch`, `torchvision`, `opencv-python`, `Pillow`, `scikit-learn`, `imbalanced-learn`.

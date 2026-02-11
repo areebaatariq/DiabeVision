@@ -45,6 +45,8 @@ npm run dev           # terminal 2 – frontend
 |------------|--------------------------------|
 | `frontend/`| Next.js app (login, dashboard, analyze, history, results) |
 | `backend/` | Express API (auth, analyses, GridFS images), MongoDB using DB `diabevision` |
+| `backend/diabeVision.ipynb` | ResNet / model training notebook (PyTorch) |
+| `backend/fyp-gans.ipynb`   | FYP training notebook: data loading, augmentation, GANs (PyTorch, Kaggle DR data) |
 
 ## Features
 
@@ -53,6 +55,15 @@ npm run dev           # terminal 2 – frontend
 - **History:** List and search past analyses; images loaded with auth.
 - **Results:** View a single analysis with charts and detailed findings.
 - **Dashboard:** Overview stats and recent analyses from the API.
+
+## Model training
+
+Python notebooks in `backend/` are used for data prep and training the ResNet (DR severity) model:
+
+- **diabeVision.ipynb** – Model training pipeline (PyTorch).
+- **fyp-gans.ipynb** – FYP notebook: dataset loading (e.g. Kaggle diabetic retinopathy), augmentation, SMOTE/imb learn, DataLoader, and GAN-related training (PyTorch, torchvision).
+
+Run with a Python 3 environment that has `torch`, `torchvision`, `opencv-python`, `PIL`, `scikit-learn`, and `imbalanced-learn` installed.
 
 ## Database
 
