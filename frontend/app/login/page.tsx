@@ -43,7 +43,7 @@ export default function LoginPage() {
             </span>
           </h1>
           <p className="text-lg text-slate-300 leading-relaxed">
-            Join thousands of medical professionals using RetinaCheck for instant, AI-powered diabetic retinopathy screening.
+            Join thousands of medical professionals using DiabeVision for instant, AI-powered diabetic retinopathy screening.
           </p>
         </div>
       </div>
@@ -54,7 +54,7 @@ export default function LoginPage() {
           <div className="text-center md:text-left">
             <Link href="/" className="inline-flex items-center gap-2 text-blue-600 font-bold text-xl mb-8">
               <Eye className="w-6 h-6" />
-              RetinaCheck
+              DiabeVision
             </Link>
             <h2 className="text-3xl font-bold text-slate-900">Welcome back</h2>
             <p className="text-slate-500 mt-2">Please enter your credentials to access the portal.</p>

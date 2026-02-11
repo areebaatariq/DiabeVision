@@ -1,6 +1,6 @@
 # DiabeVision
 
-RetinaCheck – AI-powered diabetic retinopathy screening for medical professionals. Upload retinal fundus images, get severity grading and detailed findings.
+DiabeVision – AI-powered diabetic retinopathy screening for medical professionals. Upload retinal fundus images, get severity grading and detailed findings.
 
 ## Stack
 

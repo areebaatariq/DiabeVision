@@ -55,7 +55,7 @@ export default function RegisterPage() {
           <div className="text-center md:text-left">
             <Link href="/" className="inline-flex items-center gap-2 text-blue-600 font-bold text-xl mb-8">
               <Eye className="w-6 h-6" />
-              RetinaCheck
+              DiabeVision
             </Link>
             <h2 className="text-3xl font-bold text-slate-900">Create Account</h2>
             <p className="text-slate-500 mt-2">Join our network of medical professionals.</p>

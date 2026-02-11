@@ -28,7 +28,7 @@ export default function Navbar() {
               <Eye className="h-5 w-5 text-white" />
             </div>
             <span className="bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">
-              RetinaCheck
+              DiabeVision
             </span>
           </Link>
 

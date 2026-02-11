@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RetinaCheck - AI Diabetic Retinopathy Screening",
+  title: "DiabeVision",
   description: "Instant AI-powered retinal image analysis for medical professionals.",
 };
 

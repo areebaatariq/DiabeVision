@@ -15,7 +15,7 @@ export default function LandingPage() {
               <Eye className="h-5 w-5 text-white" />
             </div>
             <span className="bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent">
-              RetinaCheck
+              DiabeVision
             </span>
           </div>
           <div className="hidden md:flex items-center gap-8">
@@ -255,7 +255,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-6 relative z-10 text-center">
           <h2 className="text-4xl md:text-6xl font-bold mb-8">Ready to modernize your screening?</h2>
           <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto">
-            Join leading ophthalmology clinics using RetinaCheck to improve patient outcomes.
+            Join leading ophthalmology clinics using DiabeVision to improve patient outcomes.
           </p>
           <Link
             href="/register"
@@ -273,10 +273,10 @@ export default function LandingPage() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-2 font-bold text-xl">
               <Eye className="h-6 w-6 text-blue-500" />
-              <span>RetinaCheck</span>
+              <span>DiabeVision</span>
             </div>
             <div className="text-slate-500 text-sm">
-              © 2024 RetinaCheck AI. All rights reserved.
+              © 2024 DiabeVision AI. All rights reserved.
             </div>
             <div className="flex gap-6">
               <a href="#" className="text-slate-400 hover:text-white transition-colors">Privacy</a>
