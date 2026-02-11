@@ -64,7 +64,3 @@ Python notebooks in `backend/` are used for data prep and training the ResNet (D
 - **fyp-gans.ipynb** – FYP notebook: dataset loading (e.g. Kaggle diabetic retinopathy), augmentation, SMOTE/imb learn, DataLoader, and GAN-related training (PyTorch, torchvision).
 
 Run with a Python 3 environment that has `torch`, `torchvision`, `opencv-python`, `PIL`, `scikit-learn`, and `imbalanced-learn` installed.
-
-## Database
-
-The backend uses a **single MongoDB database name: `diabevision`**. The connection string may point at a shared cluster; the app never uses the database name from the URL (e.g. `scopeshift`), so other projects on the same cluster are not affected.
