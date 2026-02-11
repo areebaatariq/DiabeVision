@@ -1,4 +1,8 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL ||
+  (typeof window !== "undefined" && window.location.hostname !== "localhost"
+    ? "https://diabevision-backend.onrender.com"
+    : "http://localhost:4000");
 
 function getToken(): string | null {
   if (typeof window === "undefined") return null;
@@ -15,7 +19,7 @@ export async function api<T>(
   if (!headers.has("Content-Type") && fetchOptions.body && typeof fetchOptions.body === "string") {
     headers.set("Content-Type", "application/json");
   }
-  const res = await fetch(`${API_BASE}${path}`, { ...fetchOptions, headers });
+  const res = await fetch(`${API_BASE}${path}`, { ...fetchOptions, headers, credentials: "include" });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText }));
     throw new Error((err as { error?: string }).error || "Request failed");
@@ -86,6 +90,7 @@ export async function analyzeImage(file: File): Promise<AnalysisResult> {
     method: "POST",
     headers,
     body: form,
+    credentials: "include",
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText }));
@@ -108,6 +113,7 @@ export async function getAnalysisImageBlobUrl(id: string): Promise<string> {
   if (!token) throw new Error("Not authenticated");
   const res = await fetch(`${API_BASE}/api/analyses/${id}/image`, {
     headers: { Authorization: `Bearer ${token}` },
+    credentials: "include",
   });
   if (!res.ok) throw new Error("Failed to load image");
   const blob = await res.blob();

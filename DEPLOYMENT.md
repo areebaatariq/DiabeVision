@@ -35,20 +35,19 @@ This guide walks you through deploying the **backend** (Express API) and **front
    | `MONGODB_URI` | `mongodb+srv://...` | Your Atlas (or MongoDB) connection string |
    | `JWT_SECRET` | Long random string | e.g. generate with `openssl rand -hex 32` |
    | `PORT` | `4000` | Optional; Render sets `PORT` automatically |
-   | `CORS_ORIGIN` | `https://your-frontend.onrender.com` | Set this **after** you create the frontend (see below) |
+   | `CORS_ORIGIN` | `https://diabevision.onrender.com` | Optional; backend already whitelists this by default |
 
 5. Click **Create Web Service**. Wait for the first deploy to finish.
-6. Copy the service URL (e.g. `https://diabevision-backend.onrender.com`). You will use it for **CORS** and for the frontend.
+6. Copy the service URL: **https://diabevision-backend.onrender.com**. Use it for the frontend’s `NEXT_PUBLIC_API_URL`.
 
 ---
 
 ## 2. Set Backend CORS to Your Frontend URL
 
-After you create the frontend service (next step), you’ll get a URL like `https://diabevision-frontend.onrender.com`.
+After you create the frontend service (next step), you’ll get: **https://diabevision.onrender.com**.
 
 1. Open your **backend** service on Render → **Environment**.
-2. Set **CORS_ORIGIN** to your frontend URL (no trailing slash), e.g.:
-   - `https://diabevision-frontend.onrender.com`
+2. Set **CORS_ORIGIN** to `https://diabevision.onrender.com` (or leave unset; it’s whitelisted by default).
 3. Save. Render will redeploy the backend with the new env.
 
 ---
@@ -73,7 +72,7 @@ After you create the frontend service (next step), you’ll get a URL like `http
 
    | Key | Value |
    |-----|--------|
-   | `NEXT_PUBLIC_API_URL` | Your backend URL, e.g. `https://diabevision-backend.onrender.com` |
+   | `NEXT_PUBLIC_API_URL` | `https://diabevision-backend.onrender.com` |
 
    Use the exact backend URL (no trailing slash). This is baked in at build time, so if you change it later you must **redeploy** the frontend.
 
@@ -83,8 +82,7 @@ After you create the frontend service (next step), you’ll get a URL like `http
 
 ## 4. Final CORS Check
 
-- Backend **CORS_ORIGIN** must match the frontend URL (e.g. `https://diabevision-frontend.onrender.com`).
-- If you use a custom domain for the frontend later, update **CORS_ORIGIN** to that domain and redeploy the backend.
+- Backend whitelists **https://diabevision.onrender.com** by default. For a custom frontend domain, set **CORS_ORIGIN** (comma-separated if needed) and redeploy the backend.
 
 ---
 
@@ -100,15 +98,21 @@ After you create the frontend service (next step), you’ll get a URL like `http
 
 ## 6. Health Check
 
-- Backend: open `https://your-backend.onrender.com/health`. You should see something like `{"status":"ok","db":"diabevision"}`.
-- Frontend: open `https://your-frontend.onrender.com` and sign in or register; use **Analyze** to hit the API.
+- Backend: open [https://diabevision-backend.onrender.com/health](https://diabevision-backend.onrender.com/health). You should see `{"status":"ok","db":"diabevision"}`.
+- Frontend: open [https://diabevision.onrender.com](https://diabevision.onrender.com) and sign in or register; use **Analyze** to hit the API.
 
 ---
 
 ## 7. Free Tier Notes
 
-- Render free instances **spin down** after inactivity. The first request after idle can take 30–60 seconds (cold start).
+- Render free instances **spin down** after inactivity. The first request after idle can take 30–60 seconds (cold start). If you see **"Failed to fetch"**, wait ~1 minute and retry (backend may be waking up).
 - Free backend + free frontend is fine for demos; for production consider at least one paid instance to reduce cold starts.
+
+## 8. "Failed to fetch" troubleshooting
+
+- **Cold start:** Open [backend /health](https://diabevision-backend.onrender.com/health) first; once it responds, the frontend should connect.
+- **CORS:** The frontend sends requests with `credentials: "include"`; the backend whitelists `https://diabevision.onrender.com`. No extra config needed.
+- **API URL:** Production builds default to `https://diabevision-backend.onrender.com`; you can still set `NEXT_PUBLIC_API_URL` on the frontend service if needed.
 
 ---
 

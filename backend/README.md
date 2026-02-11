@@ -14,7 +14,7 @@ Express + TypeScript API for auth and retinal analysis. Uses **MongoDB** with a 
    - `MONGODB_URI` – MongoDB connection string (can point at any cluster; DB name is overridden to `diabevision`).
    - `JWT_SECRET` – Secret for JWT signing.
    - `PORT` – Server port (default 4000).
-   - `CORS_ORIGIN` – Frontend origin (e.g. `http://localhost:3000`).
+   - `CORS_ORIGIN` – Frontend origin(s), comma-separated (e.g. `http://localhost:3000,https://diabevision.onrender.com`). Production frontend is whitelisted by default.
 
 2. Install and run:
 

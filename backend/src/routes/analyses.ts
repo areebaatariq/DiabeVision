@@ -23,7 +23,7 @@ const upload = multer({
 });
 
 function getBaseUrl(req: AuthenticatedRequest): string {
-  const host = req.get("host") || "localhost:4000";
+  const host = req.get("host") || "diabevision-backend.onrender.com";
   const protocol = req.get("x-forwarded-proto") || "http";
   return `${protocol}://${host}`;
 }

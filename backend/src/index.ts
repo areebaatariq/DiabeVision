@@ -6,10 +6,22 @@ import authRoutes from "./routes/auth.js";
 import analysesRoutes from "./routes/analyses.js";
 
 const PORT = Number(process.env.PORT) || 4000;
-const CORS_ORIGIN = process.env.CORS_ORIGIN || "http://localhost:3000";
+const CORS_ORIGINS = (process.env.CORS_ORIGIN || "http://localhost:3000,https://diabevision.onrender.com")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
 
 const app = express();
-app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      if (!origin) return cb(null, true);
+      if (CORS_ORIGINS.includes(origin)) return cb(null, origin);
+      return cb(null, false);
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);

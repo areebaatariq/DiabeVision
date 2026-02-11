@@ -29,7 +29,8 @@ npm install
 npm run dev
 ```
 
-Runs at **http://localhost:3000**. Optional: set `NEXT_PUBLIC_API_URL` in `.env.local` if the API is not at `http://localhost:4000`.
+Runs at **http://localhost:3000**. Optional: set `NEXT_PUBLIC_API_URL` in `.env.local` if the API is not at `http://localhost:4000`.  
+**Production:** [https://diabevision.onrender.com](https://diabevision.onrender.com) (API: [https://diabevision-backend.onrender.com](https://diabevision-backend.onrender.com)).
 
 ### From repo root (workspaces)
 
