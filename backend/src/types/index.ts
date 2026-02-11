@@ -1,3 +1,5 @@
+import type { ObjectId } from "mongodb";
+
 export type UserRole = "medical_professional" | "admin";
 
 export interface User {
@@ -43,7 +45,7 @@ export interface AnalysisResult {
 }
 
 export interface AnalysisDocument {
-  _id?: string;
+  _id?: ObjectId;
   userId: string;
   patientId: string;
   date: Date;

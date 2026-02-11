@@ -39,6 +39,8 @@ npm run dev:backend   # terminal 1 – backend
 npm run dev           # terminal 2 – frontend
 ```
 
+For production, see **[Deploying on Render](DEPLOYMENT.md)**.
+
 ## Project layout
 
 | Path        | Description                    |
